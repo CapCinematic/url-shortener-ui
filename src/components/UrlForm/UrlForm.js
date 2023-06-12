@@ -10,12 +10,28 @@ class UrlForm extends Component {
     };
   }
 
-  handleNameChange = e => {
+  handleNameChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleSubmit = e => {
+  handleSubmit = async (e) => {
+    // Using async will return a represention of the eventual promise, use await to prolong exuctuion until promise is handled
     e.preventDefault();
+    const { title, urlToShorten } = this.state;
+    const response = await fetch('http://localhost:3001/api/v1/urls', {
+      method: 'POST',
+      headers: {
+        'content-Type': 'aplicatipon/json'
+      },
+      body: JSON.stringify({
+        title: title,
+        long_rul: urlToShorten
+      })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      this.props.addUrl(data);
+    }
     this.clearInputs();
   }
 
